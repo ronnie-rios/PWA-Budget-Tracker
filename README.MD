@@ -3,7 +3,7 @@
 ## Description
 
 Budget Tracker is a progressive web application that can track a user's transactions through a clean UI. The website can be installed onto a user's dvice and can be used offline through the indexedDB to store transactions. Once a connection is regained, the transaction will go through and the cached files are loaded.
-
+![Screenshot 2021-08-01 143706](https://user-images.githubusercontent.com/79483108/127783501-058f9d3a-fd42-4bf6-b6d5-bcd10d313cb1.png)
 ## Technologies
 * Node
 * MongoDB
