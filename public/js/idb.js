@@ -1,6 +1,6 @@
 let db;
 
-const request= indexedDB.open('tracker', 1);
+const request= indexedDB.open('budget', 1);
 
 request.onupgradeneeded = function(event) {
     const db = event.target.result;
@@ -15,7 +15,6 @@ request.onsuccess = function(event) {
         uploadBudget();
     }
 }
-
 request.onerror = function(event) {
     console.log(event.taget.errorCode);
 }
@@ -33,34 +32,34 @@ function uploadBudget(){
     const getAll = budgetObjectStore.getAll();
 
 
-getAll.onsuccess = function(){
-    if (getAll.result.length > 0) {
-        fetch('/api/transaction',{
-            method: 'POST',
-            body: JSON.stringify(getAll.result),
-            headers: {
-                Accept: 'application/json, text/plain, */*',
-                'Content-Type': 'application/json'
+    getAll.onsuccess = function(){
+        if (getAll.result.length > 0) {
+            fetch('/api/transaction',{
+                method: 'POST',
+                body: JSON.stringify(getAll.result),
+                headers: {
+                    Accept: 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(serverResponse => {
+            if (serverResponse.message) {
+                throw new Error(serverResponse);
             }
-        })
-        .then(response => response.json())
-        .then(serverResponse => {
-          if (serverResponse.message) {
-            throw new Error(serverResponse);
-          }
-          // open one more transaction
-          const transaction = db.transaction(['new_budget'], 'readwrite');
-          // access the bduget object store
-          const budgetObjectStore = transaction.objectStore('new_budget');
-          // clear all items in your store
-          budgetObjectStore.clear();
+            // open one more transaction
+            const transaction = db.transaction(['new_budget'], 'readwrite');
+            // access the bduget object store
+            const budgetObjectStore = transaction.objectStore('new_budget');
+            // clear all items in your store
+            budgetObjectStore.clear();
 
-          alert('budget has been submitted!');
-        })
-        .catch(err => {
-          console.log(err);
-        });
+            alert('budget has been submitted!');
+            })
+            .catch(err => {
+            console.log(err);
+            });
+        }
     };
-    }
 }
 window.addEventListener('online', uploadBudget);
